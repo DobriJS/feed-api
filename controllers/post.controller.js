@@ -2,6 +2,7 @@ const router = require('express').Router();
 const postService = require('../services/post.service');
 const { requiresAuth } = require('../middlewares/auth.middleware');
 const createHttpError = require('http-errors');
+const { create } = require('../models/Post');
 
 router.get('/', async (req, res) => {
   const posts = await postService.getAll();
@@ -42,6 +43,21 @@ router.put('/comment', requiresAuth, async (req, res, next) => {
     await postService.makeComment(postId, comment);
 
     res.status(201).json({ message: 'Comment created' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/deletepost/:postId', requiresAuth, async (req, res, next) => {
+  const postId = req.params.postId;
+
+  try {
+    const post = await postService.getById(postId);
+    if (!post) throw createHttpError(422);
+    if (!post.postedBy._id.toString() === req.user._id.toString()) throw createHttpError(405);
+
+    await post.remove();
+    res.status(200);
   } catch (error) {
     next(error);
   }
