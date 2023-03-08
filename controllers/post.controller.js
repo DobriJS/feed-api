@@ -2,7 +2,6 @@ const router = require('express').Router();
 const postService = require('../services/post.service');
 const { requiresAuth } = require('../middlewares/auth.middleware');
 const createHttpError = require('http-errors');
-const { create } = require('../models/Post');
 
 router.get('/', async (req, res) => {
   const posts = await postService.getAll();
