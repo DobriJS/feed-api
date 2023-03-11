@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(routes);
 
 app.use((req, res, next) => {
-  next(createError(404, 'Endpoint not found'));
+  next(createHttpError(404, 'Endpoint not found'));
 });
 
 app.use((error, req, res, next) => {
