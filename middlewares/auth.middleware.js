@@ -8,15 +8,14 @@ exports.requiresAuth = async (req, res, next) => {
   const { authorization } = req.headers;
 
   try {
-    if (!authorization) throw createHttpError(400);
+    if (!authorization) throw createHttpError(404);
     const token = authorization.replace('Bearer ', '');
 
     const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
-    if (!decodedToken) throw createHttpError(400);
+    if (!decodedToken) throw createHttpError(404);
 
     const { _id } = decodedToken;
     const userData = await User.findById(_id).select('-password');
-
     req.user = userData;
   } catch (error) {
     next(error);
