@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const createHttpError = require('http-errors');
+const userService = require('../services/user.service');
 
 require('dotenv').config();
 
@@ -15,7 +15,7 @@ exports.requiresAuth = async (req, res, next) => {
     if (!decodedToken) throw createHttpError(404);
 
     const { _id } = decodedToken;
-    const userData = await User.findById(_id).select('-password');
+    const userData = await userService.getUserById(_id).select('-password');
     req.user = userData;
   } catch (error) {
     next(error);

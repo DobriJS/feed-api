@@ -27,13 +27,10 @@ exports.login = async (email, password) => {
 
   return {
     token,
-    user: {
-      _id,
-      username,
-      email,
-      pic,
-      followers,
-      following
-    }
+    _id,
+    username,
+    pic,
+    followers,
+    following
   };
 };
