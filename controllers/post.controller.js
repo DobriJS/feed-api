@@ -3,10 +3,15 @@ const postService = require('../services/post.service');
 const { requiresAuth } = require('../middlewares/auth.middleware');
 const createHttpError = require('http-errors');
 
-router.get('/', async (req, res) => {
-  const posts = await postService.getAll();
+router.get('/', async (req, res, next) => {
+  try {
+    const posts = await postService.getAll();
+    if (!posts) throw createHttpError(500);
 
-  return res.status(200).json(posts);
+    return res.status(200).json(posts);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post('/createpost', requiresAuth, async (req, res, next) => {
@@ -38,10 +43,31 @@ router.put('/comment', requiresAuth, async (req, res, next) => {
 
   try {
     if (!postId) throw createHttpError(400);
+    const newPost = await postService.makeComment(postId, comment);
 
-    await postService.makeComment(postId, comment);
+    res.status(201).json(newPost);
+  } catch (error) {
+    next(error);
+  }
+});
 
-    res.status(201).json({ message: 'Comment created' });
+router.put('/like', requiresAuth, async (req, res, next) => {
+  try {
+    const post = await postService.likePost(req.body.postId, req.user._id);
+    if (!post) throw createHttpError(422);
+
+    res.status(200).json(post);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put('/unlike', async (req, res, next) => {
+  try {
+    const post = await postService.unlikePost(req.body.postId, req.user._id);
+    if (!post) throw createHttpError(422);
+
+    res.status(200).json(post);
   } catch (error) {
     next(error);
   }
@@ -56,7 +82,7 @@ router.delete('/deletepost/:postId', requiresAuth, async (req, res, next) => {
     if (!post.postedBy._id.toString() === req.user._id.toString()) throw createHttpError(405);
 
     await post.remove();
-    res.status(200);
+    res.status(203);
   } catch (error) {
     next(error);
   }

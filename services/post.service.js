@@ -7,7 +7,7 @@ exports.getById = async (_id) => await Post.findOne({ _id }).populate('postedBy'
 exports.create = (postData) => Post.create(postData);
 
 exports.makeComment = async (postId, comment) => {
-  await Post.findByIdAndUpdate(
+  const post = await Post.findByIdAndUpdate(
     postId,
     {
       $push: { comments: comment }
@@ -17,4 +17,34 @@ exports.makeComment = async (postId, comment) => {
     .populate('comments.postedBy', '_id username')
     .populate('postedBy', '_id username')
     .exec();
+
+  return post;
+};
+
+exports.likePost = async (postId, _id) => {
+  const post = await Post.findByIdAndUpdate(
+    postId,
+    {
+      $push: { likes: _id }
+    },
+    {
+      new: true
+    }
+  ).exec();
+
+  return post;
+};
+
+exports.unlikePost = async (postId, _id) => {
+  const post = await Post.findByIdAndUpdate(
+    postId,
+    {
+      $pull: { likes: _id }
+    },
+    {
+      new: true
+    }
+  ).exec();
+
+  return post;
 };
