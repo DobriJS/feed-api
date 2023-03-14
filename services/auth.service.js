@@ -29,6 +29,7 @@ exports.login = async (email, password) => {
     token,
     _id,
     username,
+    email,
     pic,
     followers,
     following
