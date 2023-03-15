@@ -1,6 +1,10 @@
 const Post = require('../models/Post');
 
-exports.getAll = () => Post.find().populate('postedBy', '_id name').sort('-createdAt');
+exports.getAll = () =>
+  Post.find()
+    .populate('postedBy', '_id username')
+    .populate('comments.postedBy', '_id username')
+    .sort('-createdAt');
 
 exports.getById = async (_id) => await Post.findOne({ _id }).populate('postedBy', '_id').exec();
 
