@@ -14,7 +14,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/createpost', requiresAuth, async (req, res, next) => {
+router.post('/create-post', requiresAuth, async (req, res, next) => {
   const { title, body, image } = req.body;
 
   try {
