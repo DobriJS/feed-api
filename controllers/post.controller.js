@@ -33,6 +33,17 @@ router.post('/create-post', requiresAuth, async (req, res, next) => {
   }
 });
 
+router.get('/:id', requiresAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const signlePost = await postService.getPostById(id);
+    if (!signlePost) throw createHttpError(400);
+    res.json(signlePost);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.put('/comment', requiresAuth, async (req, res, next) => {
   const comment = {
     text: req.body.text,

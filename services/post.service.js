@@ -6,7 +6,8 @@ exports.getAll = () =>
     .populate('comments.postedBy', '_id username')
     .sort('-createdAt');
 
-exports.getById = async (_id) => await Post.findOne({ _id }).populate('postedBy', '_id').exec();
+exports.getPostById = async (_id) =>
+  await Post.findOne({ _id }).populate('postedBy', 'username').exec();
 
 exports.create = (postData) => Post.create(postData);
 
