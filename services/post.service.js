@@ -53,3 +53,8 @@ exports.unlikePost = async (postId, _id) => {
 
   return post;
 };
+
+exports.updatePost = async (_id, { title, body, image }) => {
+  const updatedPost = await Post.findByIdAndUpdate(_id, { title, body, image }, { new: true });
+  return updatedPost;
+};

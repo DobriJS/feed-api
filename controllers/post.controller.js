@@ -33,8 +33,22 @@ router.post('/create-post', requiresAuth, async (req, res, next) => {
   }
 });
 
+router.put('/edit-post/:id', requiresAuth, async (req, res, next) => {
+  const { id } = req.params;
+  const { title, body, image } = req.body;
+
+  try {
+    const updatedPost = await postService.updatePost(id, { title, body, image });
+    if (!updatedPost) throw createHttpError(409);
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/:id', requiresAuth, async (req, res, next) => {
   const { id } = req.params;
+
   try {
     const signlePost = await postService.getPostById(id);
     if (!signlePost) throw createHttpError(400);
@@ -84,7 +98,7 @@ router.put('/unlike', async (req, res, next) => {
   }
 });
 
-router.delete('/deletepost/:postId', requiresAuth, async (req, res, next) => {
+router.delete('/delete-post/:postId', requiresAuth, async (req, res, next) => {
   const postId = req.params.postId;
 
   try {
