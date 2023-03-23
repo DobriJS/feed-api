@@ -11,9 +11,9 @@ exports.getPostById = async (_id) =>
 
 exports.create = (postData) => Post.create(postData);
 
-exports.makeComment = async (postId, comment) => {
+exports.makeComment = async (_id, comment) => {
   const post = await Post.findByIdAndUpdate(
-    postId,
+    _id,
     {
       $push: { comments: comment }
     },
@@ -26,25 +26,29 @@ exports.makeComment = async (postId, comment) => {
   return post;
 };
 
-exports.likePost = async (postId, _id) => {
-  const post = await Post.findByIdAndUpdate(
-    postId,
-    {
-      $push: { likes: _id }
-    },
-    {
-      new: true
-    }
-  ).exec();
+exports.likePost = async (_id, userId) => {
+  userId = userId.toString();
+  const post = await Post.findById(_id);
+  const index = post.likes.findIndex((id) => String(id) === userId);
 
-  return post;
+  if (index === -1) {
+    post.likes.push(userId);
+  } else {
+    post.likes = post.likes.filter((id) => String(id) !== userId);
+  }
+
+  const updatedPost = await Post.findByIdAndUpdate(_id, post, {
+    new: true
+  });
+
+  return updatedPost;
 };
 
-exports.unlikePost = async (postId, _id) => {
+exports.dislikePost = async (_id, userId) => {
   const post = await Post.findByIdAndUpdate(
-    postId,
+    _id,
     {
-      $pull: { likes: _id }
+      $pull: { likes: userId }
     },
     {
       new: true
