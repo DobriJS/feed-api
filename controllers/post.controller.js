@@ -40,6 +40,7 @@ router.put('/edit-post/:id', requiresAuth, async (req, res, next) => {
   try {
     const updatedPost = await postService.updatePost(id, { title, body, image });
     if (!updatedPost) throw createHttpError(409);
+
     res.status(200).json(updatedPost);
   } catch (error) {
     next(error);
@@ -52,6 +53,7 @@ router.get('/:id', requiresAuth, async (req, res, next) => {
   try {
     const signlePost = await postService.getPostById(id);
     if (!signlePost) throw createHttpError(400);
+
     res.json(signlePost);
   } catch (error) {
     next(error);
@@ -77,8 +79,10 @@ router.put('/comment', requiresAuth, async (req, res, next) => {
 });
 
 router.put('/like', requiresAuth, async (req, res, next) => {
+  const { id } = req.body;
+
   try {
-    const post = await postService.likePost(req.body.postId, req.user._id);
+    const post = await postService.likePost(id, req.user._id);
     if (!post) throw createHttpError(422);
 
     res.status(200).json(post);
@@ -87,27 +91,16 @@ router.put('/like', requiresAuth, async (req, res, next) => {
   }
 });
 
-router.put('/unlike', async (req, res, next) => {
-  try {
-    const post = await postService.unlikePost(req.body.postId, req.user._id);
-    if (!post) throw createHttpError(422);
-
-    res.status(200).json(post);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.delete('/delete-post/:postId', requiresAuth, async (req, res, next) => {
-  const postId = req.params.postId;
+router.delete('/delete-post/:id', requiresAuth, async (req, res, next) => {
+  const postId = req.params.id;
 
   try {
-    const post = await postService.getById(postId);
+    const post = await postService.getPostById(postId);
     if (!post) throw createHttpError(422);
     if (!post.postedBy._id.toString() === req.user._id.toString()) throw createHttpError(405);
-
     await post.remove();
-    res.status(203);
+
+    res.status(203).json(postId);
   } catch (error) {
     next(error);
   }
