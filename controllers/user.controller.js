@@ -1,10 +1,15 @@
 const router = require('express').Router();
-// const createHttpError = require('http-errors');
+const userService = require('../services/user.service');
+const createHttpError = require('http-errors');
 
-router.get('/profile', async (req, res) => {
-  const user = req.user;
-  console.log(user);
-  res.status(200).json(user);
+router.get('/profile', async (req, res, next) => {
+  try {
+    const user = await userService.getUserById(req.user._id);
+    if (!user) throw createHttpError(422);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
