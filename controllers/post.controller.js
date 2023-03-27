@@ -61,12 +61,13 @@ router.get('/:id', requiresAuth, async (req, res, next) => {
 });
 
 router.put('/comment', requiresAuth, async (req, res, next) => {
+  console.log(req.body);
   const comment = {
-    text: req.body.text,
+    text: req.body.comment.text,
     postedBy: req.user._id
   };
 
-  const postId = req.body.postId;
+  const postId = req.body.comment.postId;
 
   try {
     if (!postId) throw createHttpError(400);

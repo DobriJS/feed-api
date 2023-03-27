@@ -27,35 +27,22 @@ exports.makeComment = async (_id, comment) => {
 };
 
 exports.likePost = async (_id, userId) => {
-  userId = userId.toString();
   const post = await Post.findById(_id);
-  const index = post.likes.findIndex((id) => String(id) === userId);
+  const index = post.likes.findIndex((id) => id.equals(userId));
 
   if (index === -1) {
     post.likes.push(userId);
   } else {
-    post.likes = post.likes.filter((id) => String(id) !== userId);
+    post.likes = post.likes.filter((id) => !id.equals(userId));
   }
 
   const updatedPost = await Post.findByIdAndUpdate(_id, post, {
     new: true
-  });
+  })
+    .populate('postedBy', '_id username')
+    .exec();
 
   return updatedPost;
-};
-
-exports.dislikePost = async (_id, userId) => {
-  const post = await Post.findByIdAndUpdate(
-    _id,
-    {
-      $pull: { likes: userId }
-    },
-    {
-      new: true
-    }
-  ).exec();
-
-  return post;
 };
 
 exports.updatePost = async (_id, { title, body, image }) => {
