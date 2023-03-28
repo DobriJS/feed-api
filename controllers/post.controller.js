@@ -61,7 +61,6 @@ router.get('/:id', requiresAuth, async (req, res, next) => {
 });
 
 router.put('/comment', requiresAuth, async (req, res, next) => {
-  console.log(req.body);
   const comment = {
     text: req.body.comment.text,
     postedBy: req.user._id

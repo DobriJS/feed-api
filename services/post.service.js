@@ -2,8 +2,8 @@ const Post = require('../models/Post');
 
 exports.getAll = () =>
   Post.find()
-    .populate('postedBy', '_id username')
-    .populate('comments.postedBy', '_id username')
+    .populate('postedBy', '_id username pic')
+    .populate('comments.postedBy', 'username pic')
     .sort('-createdAt');
 
 exports.getPostById = async (_id) =>
@@ -19,8 +19,8 @@ exports.makeComment = async (_id, comment) => {
     },
     { new: true }
   )
-    .populate('comments.postedBy', '_id username')
-    .populate('postedBy', '_id username')
+    .populate('comments.postedBy', 'username pic')
+    .populate('postedBy', '_id username pic')
     .exec();
 
   return post;
@@ -39,13 +39,17 @@ exports.likePost = async (_id, userId) => {
   const updatedPost = await Post.findByIdAndUpdate(_id, post, {
     new: true
   })
-    .populate('postedBy', '_id username')
+    .populate('comments.postedBy', 'username pic')
+    .populate('postedBy', '_id username pic')
     .exec();
 
   return updatedPost;
 };
 
 exports.updatePost = async (_id, { title, body, image }) => {
-  const updatedPost = await Post.findByIdAndUpdate(_id, { title, body, image }, { new: true });
+  const updatedPost = await Post.findByIdAndUpdate(_id, { title, body, image }, { new: true })
+    .populate('comments.postedBy', 'username pic')
+    .populate('postedBy', '_id username pic')
+    .exec();
   return updatedPost;
 };
