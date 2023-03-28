@@ -9,6 +9,8 @@ const routes = require('./routes');
 
 const app = express();
 
+const port = process.env.PORT || 4000;
+
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('combined'));
@@ -31,6 +33,6 @@ app.use((error, req, res, next) => {
   res.status(statusCode).json({ error: errorMessage });
 });
 
-app.listen(4000, async () => {
+app.listen(port, async () => {
   await connect();
 });
