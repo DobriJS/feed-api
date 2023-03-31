@@ -12,6 +12,9 @@ const options = {
     servers: [
       {
         url: 'http://localhost:4000'
+      },
+      {
+        url: 'https://feed-api-2h09.onrender.com'
       }
     ],
     components: {
