@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const connect = require('./config/db');
 const createHttpError = require('http-errors');
 const cors = require('cors');
+const { swaggerUi, specs } = require('./swagger');
+
 require('dotenv').config();
 
 const routes = require('./routes');
@@ -11,6 +13,7 @@ const app = express();
 
 const port = process.env.PORT || 4000;
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('combined'));
