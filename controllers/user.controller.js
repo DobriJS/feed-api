@@ -4,7 +4,7 @@ const createHttpError = require('http-errors');
 
 /**
  * @swagger
- * user/profile:
+ * /user/profile:
  *   get:
  *     summary: Get user profile
  *     tags: [User]
