@@ -14,7 +14,7 @@ const options = {
         url: 'http://localhost:4000'
       },
       {
-        url: 'https://feed-api-2h09.onrender.com'
+        url: 'https://feed-api-5cww.onrender.com'
       }
     ],
     components: {
