@@ -78,6 +78,20 @@ router.put('/comment', requiresAuth, async (req, res, next) => {
   }
 });
 
+router.put('/delete-comment/:commentId', async (req, res, next) => {
+  const { commentId } = req.params;
+  const { postId } = req.body;
+
+  try {
+    const updatedPostComment = await postService.deleteComment(postId, commentId);
+    if (!updatedPostComment) throw createHttpError(400);
+
+    res.status(200).json(updatedPostComment);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.put('/like', requiresAuth, async (req, res, next) => {
   const { id } = req.body;
 
