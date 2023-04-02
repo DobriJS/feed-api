@@ -20,10 +20,23 @@ exports.makeComment = async (_id, comment) => {
     { new: true }
   )
     .populate('comments.postedBy', 'username pic')
+    .populate('postedBy', '_id username pic');
+
+  return post;
+};
+
+exports.deleteComment = async (_id, commentId) => {
+  const post = await Post.findById(_id);
+  post.comments = post.comments.filter((id) => !id.equals(commentId));
+
+  const updatedPost = await Post.findByIdAndUpdate(_id, post, {
+    new: true
+  })
+    .populate('comments.postedBy', 'username pic')
     .populate('postedBy', '_id username pic')
     .exec();
 
-  return post;
+  return updatedPost;
 };
 
 exports.likePost = async (_id, userId) => {
