@@ -78,7 +78,7 @@ router.put('/comment', requiresAuth, async (req, res, next) => {
   }
 });
 
-router.put('/delete-comment/:commentId', async (req, res, next) => {
+router.put('/delete-comment/:commentId', requiresAuth, async (req, res, next) => {
   const { commentId } = req.params;
   const { postId } = req.body;
 
