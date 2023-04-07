@@ -11,6 +11,10 @@ const routes = require('./routes');
 
 const app = express();
 
+const artificialDelay = (req, res, next) => {
+  setTimeout(next, 1000);
+};
+
 const port = process.env.PORT || 4000;
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
@@ -19,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan('combined'));
 app.use(express.json());
 
+app.use(artificialDelay);
 app.use(routes);
 
 app.use((req, res, next) => {
